@@ -1,0 +1,18 @@
+version: '3'
+services:
+  server:
+    container_name: server
+    image: kylemanna/openvpn:latest
+    network_mode: bridge
+    environment:
+      - OVPN_URL=$PROTO://$URL
+    restart: always
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 943:943
+      - 9443:9443
+      - $PUBLIC_PORT:1194/$PROTO
+    volumes:
+      - $OVPN_DATA:/etc/openvpn
+#      - /var/lib/docker/volumes/ovpn-data-servidor:/etc/openvpn

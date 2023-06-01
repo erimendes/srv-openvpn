@@ -1,0 +1,38 @@
+#!/bin/bash
+# Environment File for OpenVPN Server
+# Arquivo de variaves de ambiente para servidor OpenVPN
+
+# Definir o volume
+#export OVPN_DATA=ovpn-data-servidor
+export OVPN_DATA=/var/lib/docker/volumes/ovpn-data-servidor
+# Criar o volume em /var/lib/docker/volumes
+#docker create volume --name $OVPN_DATA
+
+# Hostname on which your server is reachable
+# Nome do host no qual seu servidor pode ser acessado
+export URL=user-servidordns.duckdns.org
+
+# Protocol to use by OpenVPN: TCP/UDP
+# Protocolo para usado na OpenVPN
+export PROTO=udp
+
+# The port which should be exposed on the docker host
+# A porta que deve ser exposta no host do docker
+export PUBLIC_PORT=1194
+
+echo $PROTO
+echo $URL
+echo $PUBLIC_PORT
+
+#docker compose up -d
+
+# docker-compose run --rm server ovpn_genconfig -u $PROTO://$HOSTNAME
+# Executa e definir o site para configurar o openvpn
+#docker compose run --rm servervpn ovpn_genconfig -u $PHOTO://$HOSTNAME
+docker run --name server -v $OVPN_DATA:/etc/openvpn --rm kylemanna/openvpn ovpn_genconfig -u udp://$URL
+#docker run -v --name server /var/lib/docker/volumes/ovpn-data-servidor:/etc/openvpn --rm kylemanna/openvpn ovpn_genconfig -u udp://$URL
+docker run --name server -v $OVPN_DATA:/etc/openvpn --rm -it kylemanna/openvpn ovpn_initpki
+#docker run -v --name server /var/lib/docker/volumes/ovpn-data-servidor:/etc/openvpn --rm -it kylemanna/openvpn ovpn_initpki
+# docker-compose run --rm server ovpn_initpki
+# Gerar o certificado de autorização
+#docker compose run --rm -it servervpn ovpn_initpki
